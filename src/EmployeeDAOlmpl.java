@@ -7,7 +7,7 @@ import java.util.List;
 class EmployeeDAOImpl implements EmployeeDAO {
     //connect database
     public static String driverName = "org.sqlite.JDBC";
-    public static String url = "jdbc:sqlite:D:/OOPLAB10DATABASE/companys.sqlite";
+    public static String url = "jdbc:sqlite:D:/OOPLA10BDATABASE/companys.sqlite";
     public static Connection conn = null;
     //constant operators
 
@@ -15,12 +15,12 @@ class EmployeeDAOImpl implements EmployeeDAO {
     public static final String GET_All_emp = "select * from Employee";
     public static final String ADD_EMP = "insert into Employee" +
             "(empID,name,position,salary) values (?,?,?,?)";
-    public static final String UPDATE_EMP = "update Employee set" +
-            "name = ?,position = ?,salary = ? where empID = ?";
-    public static final String DEDETE_EMP = "delete from Employee"+
-            "where empID =?";
+    public static final String UPDATE_EMP = "update Employee set"+
+            " name = ?,position = ?,salary = ? where empID = ?";
+    public static final String DElETE_EMP = "delete from Employee"+
+            " where empID =?";
     public static final String FIND_EMP_BY_ID = "select * from Employee"+
-            "where empID = ?";
+            " where empID = ?";
 
 
     //create class instant
