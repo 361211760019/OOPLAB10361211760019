@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.model.core.ID;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -5,7 +7,7 @@ import java.util.List;
 class EmployeeDAOImpl implements EmployeeDAO {
     //connect database
     public static String driverName = "org.sqlite.JDBC";
-    public static String url = "jdbc:sqlite:D:/OOPLA10BDATABASE/Companys.sqlite";
+    public static String url = "jdbc:sqlite:D:/OOPLAB10DATABASE/companys.sqlite";
     public static Connection conn = null;
     //constant operators
 
@@ -13,12 +15,13 @@ class EmployeeDAOImpl implements EmployeeDAO {
     public static final String GET_All_emp = "select * from Employee";
     public static final String ADD_EMP = "insert into Employee" +
             "(empID,name,position,salary) values (?,?,?,?)";
-    public static final String UPDATE_EMP = "update Employee det" +
-            "name = ?, position = ?, salary = ? where id = ?";
-    public static final String DELETE_EMP = "dalete from Employee " +
-            " where empID = ?";
-    public static final String FIND_EMP_BY_ID = "select * from Employee " +
-            " where empID = ?";
+    public static final String UPDATE_EMP = "update Employee set" +
+            "name = ?,position = ?,salary = ? where empID = ?";
+    public static final String DEDETE_EMP = "delete from Employee"+
+            "where empID =?";
+    public static final String FIND_EMP_BY_ID = "select * from Employee"+
+            "where empID = ?";
+
 
     //create class instant
     private static EmployeeDAOImpl instant = new EmployeeDAOImpl();
@@ -75,13 +78,12 @@ class EmployeeDAOImpl implements EmployeeDAO {
             ps.setDouble(4,newEmp.getSalary());
 
             boolean rs = ps.execute();
-            if (rs == false){
+            if (rs == true){
                 System.out.println("Could not add data tob database");
                 //close connection
                 ps.close();
                 conn.close();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -92,18 +94,19 @@ class EmployeeDAOImpl implements EmployeeDAO {
         try {
             conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement(UPDATE_EMP);
-            //
+            //set parameter
             ps.setString(1,employee.getName());
-            ps.setString(2,employee.getPosition());
-            ps.setDouble(3,employee.getSalary());
-            ps.setInt(4,employee.getEmpID());
+            ps.setString(1,employee.getPosition());
+            ps.setDouble(1,employee.getSalary());
+            ps.setInt(1,employee.getEmpID());
 
             int rs = ps.executeUpdate();
-            if (rs != 0) {
-                System.out.println("Data with empID" + employee.getEmpID() + "wss updeted.");
-            }else {
-                System.out.println("Cloud not updete data with empID" + employee.getEmpID());
-
+            if (rs != 0){
+                System.out.println("Data with empID"
+                        +employee.getEmpID() + "was update.") ;
+            }  else{
+                System.out.println("Cloud not update data with empID"
+                        + employee.getEmpID());
             }
             ps.close();
             conn.close();
@@ -118,21 +121,24 @@ class EmployeeDAOImpl implements EmployeeDAO {
         try {
             conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement(UPDATE_EMP);
-            //
-            ps.setInt(1, id);
+            //set parameter
+            ps.setInt(1,id);
             int rs = ps.executeUpdate();
-            if (rs != 0) {
-                System.out.println("Employee with empID " + id + "was deleted.");
-            } else {
-                System.out.println("Cloud not deleted Employee" + "with empID" + id);
+            if (rs != 0){
+                System.out.println("Employee with empID"
+                        + id + "as deleted.");
+            } else{
+                System.out.println("Could not delete Employee"
+                        +"wite empID" + id);
             }
-                ps.close();
-                conn.close();
+            ps.close();
+            conn.close();
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
 
     @Override
     public Employee findEmp(int id) {
@@ -143,7 +149,7 @@ class EmployeeDAOImpl implements EmployeeDAO {
             //set parameter
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            if (rs.next()){
                 int empid = rs.getInt(1);
                 String name = rs.getString(2);
                 String position = rs.getString(3);
@@ -151,7 +157,7 @@ class EmployeeDAOImpl implements EmployeeDAO {
 
                 emp = new Employee(empid,name,position,salary);
 
-            } else {
+            }else{
                 System.out.println("Cloud not found Employee" +
                         "with empID" +id);
             }
@@ -163,5 +169,6 @@ class EmployeeDAOImpl implements EmployeeDAO {
             e.printStackTrace();
         }
         return emp;
+
     }
 }
